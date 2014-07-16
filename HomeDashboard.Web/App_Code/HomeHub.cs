@@ -4,13 +4,17 @@ using Microsoft.AspNet.SignalR;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SignalRChat
+namespace HomeDashboard.Web
 {
     public class ChatHub : Hub
     {
         public void Send(string name, string message)
         {
+
             Clients.All.broadcastMessage(name, message);
+
+            Repo.Add(new ChatMessage() { AuthorId = name, Text = message });
+
 
             // Call the broadcastMessage method to update clients.
             if (message.StartsWith("press "))
@@ -25,6 +29,16 @@ namespace SignalRChat
 
             
         }
+
+        public ChatMessage[] GetMessages() {
+            var result =  Repo.GetChatMessages()
+                .OrderByDescending(ch => ch.Timestamp)
+                .Take(20)
+                .ToList();
+            result.Reverse(); //returns void so we can't chain it :/
+            return result.ToArray();
+        }
+
 
 //        public void PressButton(...)
 

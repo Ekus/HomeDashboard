@@ -97,6 +97,7 @@
     <Content Include="css\custom.css" />
     <Content Include="css\metro-dark.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
     <Content Include="index.html" />
     <Content Include="less\bootstrap.css" />
     <Content Include="less\variables.css" />
@@ -152,6 +153,7 @@
     <Content Include="less\variables.less" />
     <Content Include="less\variables.original.less" />
     <Content Include="less\wells.less" />
+    <Content Include="ConnectionStrings.config" />
     <None Include="scripts\jquery-2.1.1.intellisense.js" />
     <Content Include="scripts\bootstrap.js" />
     <Content Include="scripts\bootstrap.min.js" />
@@ -172,8 +174,13 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Repo.cs" />
     <Content Include="App_Code\HomeHub.cs" />
     <Content Include="App_Code\Startup.cs" />
+    <Compile Include="Models\ChatMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <PropertyGroup>
