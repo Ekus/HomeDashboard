@@ -104,23 +104,21 @@
                 $('#message').val('').focus();
             });
 
-         
+            $scope.chat.server.getMessages()
+               .done(function (msgs) { $scope.$apply(function () { $scope.messages = msgs; $scope.counter++; }) })
+               .fail(function (error) { alert('Error: ' + error); });
 
         });
 
         $scope.clickTV = function () {
             // Call the Send method on the hub.
-            //$scope.chat.server.send($('#displayname').val(), "G");
+            $scope.chat.server.send($('#displayname').val(), "G");
             //// Clear text box and reset focus for next comment.
             //$('#message').val('').focus();
 
-            $scope.chat.server.getMessages()
-                .done($scope.getMessages)
-                .fail(function (error) { console.log('Error: ' + error); });
+           
         }
-
-        $scope.getMessages = function (msgs) { $scope.messages = msgs; $scope.counter++; $scope.$apply(function () { $scope.counter++; }); } //TODO: decide if we want to execute inside $apply or before it
-
+      
         $scope.counter = 0;
     }
     </script>
