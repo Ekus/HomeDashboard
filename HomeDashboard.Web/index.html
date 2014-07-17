@@ -26,14 +26,14 @@
     <script src="scripts/angular.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="scripts/bootstrap.min.js"></script>
-
+    <!--<script src="scripts/diff_match_patch.js"></script> see http://www.dotnetcurry.com/showarticle.aspx?ID=903 for implementation of realtime text editing -->
     <script type="text/javascript">
 
     // Define a new module for our app. The array holds the names of dependencies if any.
-    var app = angular.module("instantSearch", []);
+    var app = angular.module("dashboard", []);
 
     // The controller
-    function InstantSearchController($scope){
+    function dashboardController($scope){
 
     // The data model. These items would normally be requested via AJAX,
     // but are hardcoded here for simplicity. See the next example for
@@ -60,18 +60,22 @@
             
         };
 
-        $scope.messages = [{ authorId: 'a' }];
+        $scope.messages = []; 
 
         // Declare a proxy to reference the hub.
         $scope.chat = $.connection.chatHub;
         // Create a function that the hub can call to broadcast messages.
-        $scope.chat.client.broadcastMessage = function (name, message) {
-            // Html encode display name and message.
-            var encodedName = $('<div />').text(name).html();
-            var encodedMsg = $('<div />').text(message).html();
-            // Add the message to the page.
-            $('#discussion').append('<li><strong>' + encodedName
-                + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
+        $scope.chat.client.broadcastMessage = function (chatMsg) {
+            $scope.$apply(function () {
+                if ($scope.messages.length > 200) $scope.messages.splice(0, $scope.messages.length - 200); //remove oldest items that are beyond our limit
+                $scope.messages.push(chatMsg);
+            });
+            //// Html encode display name and message.
+            //var encodedName = $('<div />').text(name).html();
+            //var encodedMsg = $('<div />').text(message).html();
+            //// Add the message to the page.
+            //$('#discussion').append('<li><strong>' + encodedName
+            //    + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
         };
 
         $scope.chat.client.trace = function (message) {
@@ -105,7 +109,7 @@
             });
 
             $scope.chat.server.getMessages()
-               .done(function (msgs) { $scope.$apply(function () { $scope.messages = msgs; $scope.counter++; }) })
+               .done(function (msgs) { $scope.$apply(function () { $scope.messages = msgs; }) })
                .fail(function (error) { alert('Error: ' + error); });
 
         });
@@ -119,14 +123,14 @@
            
         }
       
-        $scope.counter = 0;
+
     }
     </script>
 
 
 </head>
 
-<body ng-app="instantSearch" ng-controller="InstantSearchController">
+<body ng-app="dashboard" ng-controller="dashboardController">
         
         <div class="col-sm-2 bg-gray-darker no-padding">
             <ul class="nav nav-tabs">
@@ -160,17 +164,17 @@
                 </div>
                 <div class="tab-pane" id="music">Access music player</div>
                 <div class="tab-pane" id="messages">
-                    Name:<input type="text" id="displayname" />
-                    Message: <input type="text" id="message" />
-                    <input type="button" id="sendmessage" value="Send" />
-
+ 
                     <div ng-repeat="msg in messages">
                         {{msg.Timestamp}}: {{msg.AuthorId}}: {{msg.Text}}
                     </div>
 
+                    Name:<input type="text" id="displayname" />
+                    Message: <input type="text" id="message" />
+                    <input type="button" id="sendmessage" value="Send" />
+
                     <input type="button" id="btnTV" value="TV on/off" ng-click="clickTV()"/>
-                    <h2>{{counter}}</h2>
-                    <ul id="discussion"></ul>
+                     <ul id="discussion"></ul>
 
 
                 </div>

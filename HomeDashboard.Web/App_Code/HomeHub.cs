@@ -11,9 +11,9 @@ namespace HomeDashboard.Web
         public void Send(string name, string message)
         {
 
-            Clients.All.broadcastMessage(name, message);
+            var msg = Repo.Add(new ChatMessage() { AuthorId = name, Text = message });
+            Clients.All.broadcastMessage(msg);
 
-            Repo.Add(new ChatMessage() { AuthorId = name, Text = message });
 
 
             // Call the broadcastMessage method to update clients.
