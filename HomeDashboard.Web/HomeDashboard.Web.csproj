@@ -181,8 +181,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Hubs\ListHub.cs" />
+    <Compile Include="Models\ListOfItems.cs" />
+    <Compile Include="Models\ListItem.cs" />
     <Compile Include="Repo.cs" />
-    <Content Include="App_Code\HomeHub.cs" />
+    <Compile Include="Hubs\HomeHub.cs" />
     <Content Include="App_Code\Startup.cs" />
     <Compile Include="Models\ChatMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
