@@ -55,7 +55,7 @@
 
         $scope.color = function (item, $window) {
           //  setTimeout(function () {
-                $scope.chat.server.send($('#displayname').val(), "N " + item.code);
+                $scope.chatHub.server.send($('#displayname').val(), "N " + item.code);
            // }, 1);
             
         };
@@ -66,17 +66,32 @@
         $scope.counter = 0;
 
         // Declare a proxy to reference the hub.
-        $scope.chat = $.connection.chatHub;
+        $scope.chatHub = $.connection.chatHub;
+
+        //track connection state for troubleshooting. we could've probably observed $.connection.hub.state instead, but we'd still have to convert it to text using similar code.
+        $scope.connectionState = "initializing...";
+        $.connection.hub.stateChanged(function (change) {
+            $scope.$apply(function() {
+                //0: 'connecting', 1: 'connected', 2: 'reconnecting', 4: 'disconnected'
+                if (change.newState === $.signalR.connectionState.reconnecting) $scope.connectionState= "reconnecting";
+                else if (change.newState === $.signalR.connectionState.connected) $scope.connectionState= "connected";
+                else if (change.newState === $.signalR.connectionState.disconnected) $scope.connectionState = "disconnected";
+                else if (change.newState === $.signalR.connectionState.connecting) $scope.connectionState = "connecting";
+                else $scope.connectionState= "unknown";
+            })
+        });
+
+
 
         // Create a function that the hub can call to broadcast messages.
-        $scope.chat.client.broadcastMessage = function (chatMsg) {
+        $scope.chatHub.client.broadcastMessage = function (chatMsg) {
             $scope.$apply(function () {
                 if ($scope.messages.length > 200) $scope.messages.splice(0, $scope.messages.length - 200); //remove oldest items that are beyond our limit
                 $scope.messages.push(chatMsg);
             });
         };
 
-        $scope.chat.client.trace = function (message) {
+        $scope.chatHub.client.trace = function (message) {
             var encodedMsg = $('<div />').text(message).html();
             // Add the message to the page.
             $('#discussion').append('<li><i>' + encodedMsg + '</i></li>');
@@ -102,36 +117,36 @@
                 // else add new item
                 if (!handled) {
                     $scope.shoppingList.push(item);
-                    $scope.registerWatcherForItem($scope.shoppingList.length - 1);
+                   // $scope.registerWatcherForItem($scope.shoppingList.length - 1);
                 }
 
             });
         };
 
-        $scope.listHub.client.trace = $scope.chat.client.trace;
+        $scope.listHub.client.trace = $scope.chatHub.client.trace;
 
         // Start the connection.
         $.connection.hub.start().done(function () {
             $('#sendmessage').click(function () {
                 // Call the Send method on the hub.
-                $scope.chat.server.send($('#displayname').val(), $('#message').val());
+                $scope.chatHub.server.send($('#displayname').val(), $('#message').val());
                 // Clear text box and reset focus for next comment.
                 $('#message').val('').focus();
             });
 
-            $scope.chat.server.getMessages()
+            $scope.chatHub.server.getMessages()
                .done(function (msgs) { $scope.$apply(function () { $scope.messages = msgs; }) })
                .fail(function (error) { alert('Error: ' + error); });
 
-            //$scope.chat.server.getMessages()
+            //$scope.chatHub.server.getMessages()
 
             $scope.listHub.server.getItems()
                .done(function (items) {
                    $scope.$apply(function () {
                        $scope.shoppingList = items;
-                       for (var i = 0; i < $scope.shoppingList.length; i++) {
-                           $scope.registerWatcherForItem(i);
-                       }
+                       //for (var i = 0; i < $scope.shoppingList.length; i++) {
+                       //    $scope.registerWatcherForItem(i);
+                       //}
                    })
                })
                .fail(function (error) { alert('Error: ' + error); });
@@ -152,28 +167,28 @@
 
         $scope.shopListItemToUpdate = null;
 
-        $scope.registerWatcherForItem = function (index) {
-            // the first watcher is used to identify the affected item. we could use just a single deep watcher but that would actually be more difficult.
-            // we may reconsider switching to single watcher though... and/or adding code that finds what changed and in which item to the server (hub)
-            $scope.$watch('shoppingList[' + index + ']', function (newValue, oldValue) {
-                if (newValue !== undefined) $scope.shopListItemToUpdate = newValue.Id;
-                $scope.counter = $scope.counter + 1;
-                console.log(newValue);
-            }, true);
+        //$scope.registerWatcherForItem = function (index) {
+        //    // the first watcher is used to identify the affected item. we could use just a single deep watcher but that would actually be more difficult.
+        //    // we may reconsider switching to single watcher though... and/or adding code that finds what changed and in which item to the server (hub)
+        //    $scope.$watch('shoppingList[' + index + ']', function (newValue, oldValue) {
+        //        if (newValue !== undefined) $scope.shopListItemToUpdate = newValue.Id;
+        //        $scope.counter = $scope.counter + 1;
+        //        console.log(newValue);
+        //    }, true);
 
-            $scope.$watch('shoppingList[' + index + '].IsUrgent', function (newValue, oldValue) {
-                $scope.counter = $scope.counter + 1;
-                console.log(newValue);
-                $scope.listHub.server.setUrgent($scope.shopListItemToUpdate, newValue);
-            });
+        //    $scope.$watch('shoppingList[' + index + '].IsUrgent', function (newValue, oldValue) {
+        //        $scope.counter = $scope.counter + 1;
+        //        console.log(newValue);
+        //        $scope.listHub.server.setUrgent($scope.shopListItemToUpdate, newValue);
+        //    });
 
-            $scope.$watch('shoppingList[' + index + '].Text', function (newValue, oldValue) {
-                $scope.counter = $scope.counter + 1;
-                console.log(newValue);
-                $scope.listHub.server.updateText($scope.shopListItemToUpdate, newValue);
-            });
+        //    $scope.$watch('shoppingList[' + index + '].Text', function (newValue, oldValue) {
+        //        $scope.counter = $scope.counter + 1;
+        //        console.log(newValue);
+        //        $scope.listHub.server.updateText($scope.shopListItemToUpdate, newValue);
+        //    });
 
-        }
+        //}
 
 
         // Get the user name and store it to prepend to messages.
@@ -191,7 +206,7 @@
     
         $scope.clickTV = function () {
             // Call the Send method on the hub.
-            $scope.chat.server.send($('#displayname').val(), "G");
+            $scope.chatHub.server.send($('#displayname').val(), "G");
             //// Clear text box and reset focus for next comment.
             //$('#message').val('').focus();
 
@@ -219,7 +234,7 @@
         </div>
 
         <div class="col-sm-4 bg-gray-dark no-padding">
-
+            <h1>Connection: {{connectionState}}</h1>
             <!-- Tab panes -->
             <div class="tab-content" style="min-height:1000px;">
                 <div class="tab-pane" id="home">
@@ -258,8 +273,7 @@
                 <div class="tab-pane" id="shopList">
 
                     <div ng-repeat="item in shoppingList">
-                        {{item.Timestamp}}: <input type="checkbox" ng-model="item.IsUrgent" /><input type="text" ng-model="item.Text" /> {{item.IsBeingEditedBy.join(", ")}}
-                    </div>
+                        {{item.Timestamp}}: <input type="checkbox" ng-model="item.IsUrgent" ng-change="listHub.server.setUrgent(item.Id, item.IsUrgent)" /><input type="text" ng-model="item.Text" ng-change="item.uiDirty=true" /> <input type="button" value="Update" ng-click="listHub.server.updateText(item.Id, item.Text)" ng-show="item.uiDirty" /> {{item.IsBeingEditedBy.join(" , ")}}</div>
 
                     New item: <input type="text" ng-model="newShoppingListItem.Text" />
                     <input type="button" value="Add" ng-click="addShopListItem()" />
