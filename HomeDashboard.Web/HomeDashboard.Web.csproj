@@ -154,6 +154,7 @@
     <Content Include="less\variables.original.less" />
     <Content Include="less\wells.less" />
     <Content Include="ConnectionStrings.config" />
+    <None Include="Properties\PublishProfiles\EkusHome.pubxml" />
     <None Include="scripts\jquery-2.1.1.intellisense.js" />
     <Content Include="scripts\bootstrap.js" />
     <Content Include="scripts\bootstrap.min.js" />

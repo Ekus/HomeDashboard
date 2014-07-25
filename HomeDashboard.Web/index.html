@@ -233,7 +233,7 @@
             </ul>
         </div>
 
-        <div class="col-sm-4 bg-gray-dark no-padding">
+        <div class="col-md-6 bg-gray-dark no-padding">
             <h1>Connection: {{connectionState}}</h1>
             <!-- Tab panes -->
             <div class="tab-content" style="min-height:1000px;">
@@ -257,7 +257,7 @@
                 <div class="tab-pane" id="messages">
  
                     <div ng-repeat="msg in messages">
-                        {{msg.Timestamp}}: {{msg.AuthorId}}: {{msg.Text}}
+                        {{msg.Timestamp | date:'yyyy-MM-dd HH:mm:ss'}}: {{msg.AuthorId}}: {{msg.Text}}
                     </div>
 
                     Name:<input type="text" id="displayname" />
@@ -273,7 +273,7 @@
                 <div class="tab-pane" id="shopList">
 
                     <div ng-repeat="item in shoppingList">
-                        {{item.Timestamp}}: <input type="checkbox" ng-model="item.IsUrgent" ng-change="listHub.server.setUrgent(item.Id, item.IsUrgent)" /><input type="text" ng-model="item.Text" ng-change="item.uiDirty=true" /> <input type="button" value="Update" ng-click="listHub.server.updateText(item.Id, item.Text)" ng-show="item.uiDirty" /> {{item.IsBeingEditedBy.join(" , ")}}</div>
+                        {{item.Timestamp | date:'yyyy-MM-dd HH:mm:ss'}}: <input type="checkbox" ng-model="item.IsUrgent" ng-change="listHub.server.setUrgent(item.Id, item.IsUrgent)" /><input type="text" ng-model="item.Text" ng-change="item.uiDirty=true" /> <input type="button" value="Update" ng-click="listHub.server.updateText(item.Id, item.Text)" ng-show="item.uiDirty" /> {{item.IsBeingEditedBy.join(" , ")}}</div>
 
                     New item: <input type="text" ng-model="newShoppingListItem.Text" />
                     <input type="button" value="Add" ng-click="addShopListItem()" />
