@@ -33,7 +33,7 @@
     var app = angular.module("dashboard", []);
 
     // The controller
-    function dashboardController($scope){
+    function dashboardController($scope, $http){
 
     // The data model. These items would normally be requested via AJAX,
     // but are hardcoded here for simplicity. See the next example for
@@ -210,7 +210,35 @@
 
            
         }
-      
+        $scope.veraSend = function (url) {
+            var veraBaseUrl = 'http://192.168.1.75/';
+            $http.get(veraBaseUrl + "data_request?id=lu_sdata").
+     success(function (data, status, headers, config) {
+         $scope.devices = data.devices;
+         // this callback will be called asynchronously
+         // when the response is available
+     }).
+       error(function (data, status, headers, config) {
+           $scope.veraSendMessage = data;
+           // called asynchronously if an error occurs
+           // or server returns response with an error status.
+       });
+
+
+            $http.get(veraBaseUrl + url).
+              success(function (data, status, headers, config) {
+                  $scope.veraSendMessage = data;
+                  // this callback will be called asynchronously
+                  // when the response is available
+              }).
+              error(function (data, status, headers, config) {
+                  $scope.veraSendMessage = data;
+                  // called asynchronously if an error occurs
+                  // or server returns response with an error status.
+              });
+        }
+
+ 
 
     }
     </script>
@@ -280,7 +308,26 @@
             <br />{{counter}}
         </div>
 
-        <div class="tab-pane" id="settings">Settings</div>
+        <div class="tab-pane" id="settings">
+        
+        Set temperature (F): <input type="number" min="10" max="85" ng-model="temperatureF" /> <input type="button" ng-click="setTemperature(temperatureF)" />
+
+            <br/>Kitchen 
+            <input type="button" value="ON" ng-click="veraSend('data_request?id=action&output_format=xml&DeviceNum=3&serviceId=urn:upnp-org:serviceId:SwitchPower1&action=SetTarget&newTargetValue=1')" />
+            <input type="button" value="OFF" ng-click="veraSend('data_request?id=action&output_format=xml&DeviceNum=3&serviceId=urn:upnp-org:serviceId:SwitchPower1&action=SetTarget&newTargetValue=0')" />
+
+            <br />12 V Spotlights
+            <input type="button" value="ON" ng-click="veraSend('data_request?id=action&output_format=xml&DeviceNum=18&serviceId=urn:upnp-org:serviceId:SwitchPower1&action=SetTarget&newTargetValue=1')" />
+            <input type="button" value="OFF" ng-click="veraSend('data_request?id=action&output_format=xml&DeviceNum=18&serviceId=urn:upnp-org:serviceId:SwitchPower1&action=SetTarget&newTargetValue=0')" />
+
+            
+
+            <div ng-repeat="device in devices">
+                <div>{{device.name}} ID:{{device.id}} Status: {{device.status}}</div>
+            </div>
+
+            <span>{{veraSendMessage}}</span>
+        </div>
     </div>
 
 </div>
