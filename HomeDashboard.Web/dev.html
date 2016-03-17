@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home.Ekus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--<link href="css/bootstrap-metro.css" rel="stylesheet">-->
+    <link href="less/bootstrap.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+
+
+    <!--Script references. -->
+    <!--Reference the jQuery library. -->
+    <script src="scripts/jquery-2.1.1.min.js"></script>
+    <script src="scripts/angular.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="scripts/bootstrap.min.js"></script>
+    <!--<script src="scripts/diff_match_patch.js"></script> see http://www.dotnetcurry.com/showarticle.aspx?ID=903 for implementation of realtime text editing -->
+    <script type="text/javascript">
+
+        // Define a new module for our app. The array holds the names of dependencies if any.
+        var app = angular.module("dashboard", []);
+
+
+        // The controller
+        function dashboardController($scope, $http, $interval) {
+            $scope.test = "test1";
+            $scope.counter = 0;
+            $scope.ajaxCounter = 0;
+    
+            $scope.veraSwitch = function (deviceId, onOff) {
+                console.log(onOff);
+                console.log(onOff ? 1 : 0);
+                $scope.veraSend('data_request?id=action&output_format=xml&DeviceNum=' + deviceId + '&serviceId=urn:upnp-org:serviceId:SwitchPower1&action=SetTarget&newTargetValue=' + (onOff ? 1 : 0));
+            }
+
+            $scope.veraSend = function (url) {
+                var veraBaseUrl = 'http://192.168.1.75/';
+
+                $http.get(veraBaseUrl + url).
+                  success(function (data, status, headers, config) {
+                      $scope.veraSendMessage = data;
+                      // this callback will be called asynchronously
+                      // when the response is available
+                      $scope.veraRefreshDevices();
+                  }).
+                  error(function (data, status, headers, config) {
+                      $scope.veraSendMessage = data;
+                      // called asynchronously if an error occurs
+                      // or server returns response with an error status.
+                      $scope.veraRefreshDevices();
+                  });
+            }
+
+            $scope.veraRefreshDevices = function () {
+                console.log("veraRefreshDevices calling...");
+                var veraBaseUrl = 'http://192.168.1.75/';
+                $http.get(veraBaseUrl + "data_request?id=lu_sdata")
+                  .success(function (data, status, headers, config) {
+                      $scope.devices = data.devices;
+                      //console.log("veraRefreshDevices finished.");
+                      // this callback will be called asynchronously
+                      // when the response is available
+                  })
+                    .error(function (data, status, headers, config) {
+                        $scope.veraSendMessage = data;
+                        //console.log("veraRefreshDevices finished with error.");
+                        // called asynchronously if an error occurs
+                        // or server returns response with an error status.
+                    });
+            }
+
+            $interval($scope.veraRefreshDevices, 1500); //todo: consider migrating to signalR instead of short polling.
+
+
+        }
+    </script>
+
+
+</head>
+
+<body ng-app="dashboard" ng-controller="dashboardController">
+    <a href="http://192.168.1.75/data_request?id=lu_sdata">http://192.168.1.75/data_request?id=lu_sdata</a>
+    <p>
+                {{test}}
+    </p>
+    <div class="col-md-6 bg-gray-dark no-padding">
+        <div class="tab-pane" id="settings" ng-init="veraRefreshDevices();">
+    
+            <div ng-repeat="device in devices track by device.id">
+                <div ng-if="device.category == 2 || device.category ==3">
+                    <!-- Dimmable Switch=2; On/Off Switch=3 -->
+                    <!--{{device.name}} ID:{{device.id}} Status: {{device.status}}-->
+                    <!--<input type="button" value="ON" ng-click="veraSwitch(device.id, 1)" />
+                    <input type="button" value="OFF" ng-click="veraSwitch(device.id, 0)" />-->
+
+
+                    <button class="btn btn-lg btn-default" style="margin: 5px; width: 210px; text-align:left" ng-click="veraSwitch(device.id, 0==device.status)">
+                        <div ng-show="device.status" ng-style="{ background:'#ccc', border: '1px solid #888', width:'16px',height:'16px', margin:'auto',display:'inline-block'}"></div>
+                        <div ng-hide="device.status" ng-style="{ background:'transparent', border: '1px solid #888', width:'16px',height:'16px', margin:'auto',display:'inline-block'}"></div>
+                        <span>{{device.name}}</span>
+                    </button>
+                    <button class="btn btn-lg btn-default" style="margin: 5px; width: 70px; text-align:left" ng-click="veraSwitch(device.id, 1)">
+                        <span class="caret"></span>
+                    </button>
+                    <button class="btn btn-lg btn-default" style="margin: 5px; width: 70px; text-align:left" ng-click="veraSwitch(device.id, 0)">
+                        OFF
+                    </button>
+                </div>
+            </div>
+
+            <span>{{veraSendMessage}}</span>
+        </div>
+    </div>
+</body>
+</html>
