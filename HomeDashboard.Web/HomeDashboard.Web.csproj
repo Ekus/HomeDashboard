@@ -98,6 +98,7 @@
     <Content Include="css\custom.css" />
     <Content Include="css\flatWeatherPlugin.css" />
     <Content Include="css\metro-dark.css" />
+    <Content Include="css\nv.d3.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="fonts\weathericons-regular-webfont.svg" />
     <Content Include="Global.asax" />
@@ -165,8 +166,12 @@
     <Content Include="fonts\weathericons-regular-webfont.woff" />
     <None Include="Properties\PublishProfiles\EkusHome.pubxml" />
     <None Include="scripts\jquery-2.1.1.intellisense.js" />
+    <Content Include="scripts\angularjs-nvd3-directives.js" />
+    <Content Include="scripts\angularjs-nvd3-directives.min.js" />
     <Content Include="scripts\bootstrap.js" />
     <Content Include="scripts\bootstrap.min.js" />
+    <Content Include="scripts\d3.js" />
+    <Content Include="scripts\d3.min.js" />
     <Content Include="scripts\diff_match_patch.js" />
     <Content Include="scripts\diff_match_patch_test.html" />
     <Content Include="scripts\diff_match_patch_test.js" />
@@ -185,6 +190,9 @@
     <Content Include="scripts\angular-mocks.js" />
     <Content Include="scripts\jquery.signalR-2.1.0.js" />
     <Content Include="scripts\jquery.signalR-2.1.0.min.js" />
+    <Content Include="scripts\moment.js" />
+    <Content Include="scripts\nv.d3.js" />
+    <Content Include="scripts\nv.d3.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
