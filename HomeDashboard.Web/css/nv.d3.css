@@ -159,6 +159,7 @@ svg {
 
 svg text {
   font: normal 12px Arial;
+  fill:#888; /* yup, fill not stroke  */
 }
 
 svg .title {
@@ -213,7 +214,7 @@ svg .title {
 
 .nvd3 .nv-axis path {
   fill: none;
-  stroke: #000;
+  stroke: #888;
   stroke-opacity: .75;
   shape-rendering: crispEdges;
 }
@@ -228,7 +229,8 @@ svg .title {
 
 .nvd3 .nv-axis line {
   fill: none;
-  stroke: #e5e5e5;
+  stroke: #888;
+  stroke-opacity: .25;
   shape-rendering: crispEdges;
 }
 
@@ -750,11 +752,12 @@ svg .title {
 
 .nvd3 .axis line, .axis path {
   fill: none;
-  stroke: #000;
+  stroke: #888;
   shape-rendering: crispEdges;
 }
 
 .nvd3 .axis text {
+    fill: #888;
   text-shadow: 0 1px 0 #fff;
 }
 
