@@ -268,11 +268,19 @@
                     $scope.veraSend('data_request?id=action&output_format=xml&DeviceNum=' + deviceId + '&serviceId=urn:upnp-org:serviceId:SwitchPower1&action=SetTarget&newTargetValue=' + (onOff ? 1 : 0));
                 }
 
+                $scope.proxyGet = function (url) {
+                    return $http({
+                        url: "miniproxy.ashx",
+                        method: "GET",
+                        params: { url: url }
+                    });
+                }
+
                 $scope.veraSend = function (url) {
                   
 
-                    $http.get(veraBaseUrl + url).
-                        then(function (response) {
+                        $scope.proxyGet(veraBaseUrl + url)
+                        .then(function (response) {
                             $scope.veraSendMessage = response.data;
                             // this callback will be called asynchronously
                             // when the response is available
@@ -287,7 +295,7 @@
 
                 $scope.veraRefreshDevices = function () {
                     console.log("veraRefreshDevices calling...");
-                    $http.get(veraBaseUrl + "data_request?id=lu_sdata")
+                    $scope.proxyGet(veraBaseUrl + "data_request?id=lu_sdata")
                         .then(function (response) {
                             $scope.devices = response.data.devices;
                             //console.log("veraRefreshDevices finished.");
@@ -304,7 +312,7 @@
 
                 $scope.refreshDuolingo = function () {
                     console.log("Refreshing duolingo");
-                    $http.get("http://www.duolingo.com/users/andrzejrus")
+                    $scope.proxyGet("http://www.duolingo.com/users/andrzejrus")
                         .then(function (response) {
                             console.log(response);
                             $scope.duolingoUsers = response.data.language_data.es.points_ranking_data;
