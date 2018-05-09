@@ -26,6 +26,8 @@ color:#eee;
 margin: 0px;
 }
 
+
+
 .tab-pane { min-height: 100%;}
 
 .bg-gray-darker {
@@ -49,5 +51,5 @@ margin: 0px;
 .no-padding { padding:0px;}
 
 .side-menu {
-    color:black;background-color:aqua;font-size:24px; max-width:50px;
+    color:black;background-color:aqua;font-size:24px;
 }

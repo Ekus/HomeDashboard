@@ -108,6 +108,8 @@
     <Content Include="css\flatWeatherPlugin.css" />
     <Content Include="css\metro-dark.css" />
     <Content Include="css\nv.d3.css" />
+    <Content Include="hometab.html" />
+    <Content Include="devices.html" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="fonts\weathericons-regular-webfont.svg" />
     <Content Include="Global.asax" />

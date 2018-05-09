@@ -1,0 +1,28 @@
+<div>
+	Set temperature (F): <input type="number" min="10" max="85" ng-model="temperatureF" /> <input type="button" ng-click="setTemperature(temperatureF)" />
+
+	<div ng-repeat="device in devices track by device.id">
+		<div ng-if="device.category == 2 || device.category ==3" class="row">
+			<div class="col-xs-8">
+				<button class="form-control btn btn-lg btn-default" style="text-align:left" ng-click="veraSwitch(device.id, 0==device.status)">
+					<div ng-show="device.status" ng-style="{ background:'#ccc', border: '1px solid #888', width:'16px',height:'16px', margin:'auto',display:'inline-block'}"></div>
+					<div ng-hide="device.status" ng-style="{ background:'transparent', border: '1px solid #888', width:'16px',height:'16px', margin:'auto',display:'inline-block'}"></div>
+					<span>{{device.name}}</span>
+				</button>
+			</div>
+			<div class="col-xs-2">
+				<button class="form-control btn btn-lg btn-default" style="text-align:left; color:black; background:#ccc" ng-click="veraSwitch(device.id, 1)">
+					ON
+				</button>
+			</div>
+			<div class="col-xs-2">
+				<button class="form-control btn btn-lg btn-default" style="text-align:left" ng-click="veraSwitch(device.id, 0)">
+					OFF
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<span>{{veraSendMessage}}</span>
+</div>
+ 

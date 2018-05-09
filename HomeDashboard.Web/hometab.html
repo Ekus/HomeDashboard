@@ -1,0 +1,66 @@
+﻿<div class="row">
+	<div class="col-sm-4">
+		<div class="panel panel-default">
+			<div class="panel-heading">Weather in Cary</div>
+			<div class="panel-body">
+				<div id="example">
+					<div class="flatWeatherPlugin partial">
+						<h2>Cary</h2><div class="wiToday">
+							<div class="wiIconGroup">
+								<div class="wi wi500"></div>
+								<p class="wiText">Light rain</p>
+							</div><p class="wiTemperature">62<sup>°F</sup></p><p class="wiDay">Tuesday</p>
+						</div>
+						<ul class="wiForecasts">
+							<li class="wiDay">
+								<span>Wednesday</span>
+								<ul class="wiForecast">
+									<li class="wi wi501"></li>
+									<li class="wiMax">58<sup>°F</sup></li>
+									<li class="wiMin">55<sup>°F</sup></li>
+								</ul>
+							</li>
+							<li class="wiDay">
+								<span>Thursday</span>
+								<ul class="wiForecast">
+									<li class="wi wi502"></li>
+									<li class="wiMax">55<sup>°F</sup></li>
+									<li class="wiMin">53<sup>°F</sup></li>
+								</ul>
+							</li>
+							<li class="wiDay"><span>Friday</span><ul class="wiForecast"><li class="wi wi800"></li><li class="wiMax">56<sup>°F</sup></li><li class="wiMin">51<sup>°F</sup></li></ul></li>
+						</ul>
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+
+	<div class="col-sm-4">
+		<div class="panel panel-default">
+			<div class="panel-heading">Temperature chart</div>
+			<div class="panel-body">
+				<nvd3-line-chart data="exampleData"
+								 id="temperatureChart"
+								 showXAxis="true"
+								 showYAxis="true"
+								 width="550"
+								 height="350"
+								 forcey="100"
+								 xaxistickformat="tempChartTickFormat">
+					<svg></svg>
+				</nvd3-line-chart>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-sm-4">
+		<div class="panel panel-default">
+			<div class="panel-heading">Duolingo</div>
+			<div class="panel-body" ng-include="'duolingo.html'">
+			</div>
+		</div>
+	</div>
+</div>
